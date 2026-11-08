@@ -460,7 +460,7 @@ end
 -- relayout: the legend's content may have changed (another map, quests, a toggle), so lay it out
 -- again; a zoom or resize only moves the markers.
 local function draw(relayout)
-	if not (map and map:IsShown() and opt("showWorld")) then
+	if not (map and map:IsShown() and opt("showWorld") and Polestar.GuideShown()) then
 		for i = 1, placed do dots[i]:Hide() end
 		placed = 0
 		wipe(here)
@@ -655,7 +655,7 @@ end
 function layoutLegend()
 	if not legend then return end
 	legend.title:SetText(opt("preview") and "Quest spawns (preview)" or "Quest spawns")
-	local wanted = opt("showLegend") and opt("showWorld") and map:IsShown()
+	local wanted = opt("showLegend") and opt("showWorld") and map:IsShown() and Polestar.GuideShown()
 	local list = {}
 	if wanted then
 		for _, q in ipairs(quests) do
@@ -782,7 +782,7 @@ local function drawMinimap()
 	st[1], st[2], st[3], st[4], st[5], mmDirty = px, py, facing, radius, half, false
 
 	local n = 0
-	local cg = px and opt("showMinimap") and grid[cont]
+	local cg = px and opt("showMinimap") and Polestar.GuideShown() and grid[cont]
 	if cg then
 		local size = opt("minimapSize")
 		local square = GetMinimapShape and GetMinimapShape() == "SQUARE"
@@ -859,6 +859,10 @@ events:SetScript("OnEvent", function(_, event, name)
 end)
 -- Polestar's guide moving on changes which quests stepOnly shows.
 for _, msg in ipairs({ "STEP_CHANGED", "STEP_UPDATED", "GUIDE_CHANGED" }) do Polestar.On(msg, queue) end
+-- Hiding the guide (ui.shown off, or, from Polestar 0.3.5, an instance hide) hides the markers and legend with it.
+local function guideShown() lastMap, mmDirty = nil, true end
+Polestar.On("SETTING_CHANGED", function(path) if path == "ui.shown" then guideShown() end end)
+Polestar.On("GUIDE_SHOWN", guideShown)
 
 ---------------------------------------------------------------------------
 -- Options panel (Options > AddOns > Polestar: Mob Markers): changes apply live.
