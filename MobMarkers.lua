@@ -49,9 +49,13 @@ local RING = "Interface\\AddOns\\Polestar_Mob_Markers\\ring%d.tga" -- 16, 32 and
 local LEVEL = "PIN_FRAME_LEVEL_SUPER_TRACKED_QUEST"
 
 local function palette(k) return PALETTES[opt(k)] or PALETTES[DEFAULTS[k]] end
+-- The first quest (with stepOnly, often the only one) keeps the skull's own colours; the rest take
+-- the palette from its start.
+local NO_TINT = { 1, 1, 1 }
 local function fillFor(qi)
+	if qi == 1 then return NO_TINT end
 	local fills = palette("questPalette")
-	return fills[(qi - 1) % #fills + 1]
+	return fills[(qi - 2) % #fills + 1]
 end
 
 -- The mi-th border for a quest, never the quest's own fill colour.
@@ -904,7 +908,7 @@ function setupOptions()
 	local palettes = {}
 	for _, k in ipairs(PALETTE_ORDER) do palettes[#palettes + 1] = { k, PALETTES[k].label } end
 	dropdown("questPalette", "Quest colours", palettes,
-		"The colours quests are given, in quest-log order: the skull's colour.")
+		"The colours quests are given, in quest-log order: the skull's colour. The first quest keeps the skull's own colours.")
 	dropdown("mobPalette", "Mob colours", palettes,
 		"The colours of the rings that tell a quest's mobs apart. A quest with one mob has no ring.")
 	slider("worldSize", "World map marker size", 4, 24, 1, " px", "How big each marker is on the world map (the medallion is drawn 1.6 times this).")
