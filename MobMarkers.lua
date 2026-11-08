@@ -36,7 +36,7 @@ local PALETTE_ORDER = { "polestar", "rings", "vivid", "muted", "safe", "mono" }
 local HOLE = 1 / 1.3 -- the ring textures' hole is this fraction of their size (tools: the ring generator)
 -- Options panel values (sizes in px on screen, opacity in percent), saved in PolestarMobMarkersDB.
 local DEFAULTS = { worldSize = 10, minimapSize = 9, fillAlpha = 50, borderAlpha = 75, showWorld = true, showMinimap = true,
-	minimapButton = true, minimapButtonAngle = 225, showLegend = true, preview = false, stepOnly = true,
+	minimapButton = true, minimapButtonAngle = 200, showLegend = true, preview = false, stepOnly = true, -- 200: Polestar's own button is at 225
 	questPalette = "polestar", mobPalette = "polestar" }
 local function opt(k)
 	local v = PolestarMobMarkersDB and PolestarMobMarkersDB[k]
